@@ -451,7 +451,7 @@ class AnimateWanModel(WanModel):
     def after_patch_embedding(self, x, pose_latents, face_pixel_values):
         if pose_latents is not None:
             pose_latents = self.pose_patch_embedding(pose_latents)
-            x[:, :, 1:] += pose_latents
+            x[:, :, 1:pose_latents.shape[2] + 1] += pose_latents[:, :, :x.shape[2] - 1]
 
         if face_pixel_values is None:
             return x, None
@@ -523,7 +523,10 @@ class AnimateWanModel(WanModel):
 
         patches_replace = transformer_options.get("patches_replace", {})
         blocks_replace = patches_replace.get("dit", {})
+        transformer_options["total_blocks"] = len(self.blocks)
+        transformer_options["block_type"] = "double"
         for i, block in enumerate(self.blocks):
+            transformer_options["block_index"] = i
             if ("double_block", i) in blocks_replace:
                 def block_wrap(args):
                     out = {}
