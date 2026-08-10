@@ -88,8 +88,8 @@ _RETRY_STATUS = {408, 500, 502, 503, 504}  # status 429 is handled separately
 _MAX_RETRY_AFTER_WAIT = 150.0  # Cap a server Retry-After at this many seconds so a large hint can't block execution
 
 PRICE_CREDITS_HEADER = "X-Comfy-Credits-Used"
-"""Proxy response header with the actual cost in Comfy credits. When present on any successful proxied response,
-it takes precedence over ``price_extractor``."""
+"""Proxy response header with the server-authored price in Comfy credits.
+When present on any successful proxied response, it takes precedence over ``price_extractor``."""
 
 _credits_used_by_execution: "weakref.WeakKeyDictionary[type, float]" = weakref.WeakKeyDictionary()
 """Last PRICE_CREDITS_HEADER value per node execution, keyed by the node's per-execution class clone."""
